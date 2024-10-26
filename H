@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С Днем Рождения, Степан!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+
+    #score {
+      font-size: 1.2rem;
+      margin-bottom: 1em;
+    }
+
+    #startButton {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      background-color: #6bc1ff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .balloon {
+      position: absolute;
+      width: 50px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50% 50% 45% 45%;
+      cursor: pointer;
+    }
+
+    /* Разные цвета шариков */
+    .balloon:nth-child(1) { background: #ff6b6b; }
+    .balloon:nth-child(2) { background: #ffe66d; }
+    .balloon:nth-child(3) { background: #6bc1ff; }
+    .balloon:nth-child(4) { background: #ffb6c1; }
+    .balloon:nth-child(5) { background: #8e44ad; }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      #startButton {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+      .balloon {
+        width: 40px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>С Днем Рождения, Степан!</h1>
+  <div id="score">Счет: 0</div>
+  <button id="startButton">Начать игру</button>
+
+  <script>
+    let score = 0;
+    let gameInterval;
+    const scoreDisplay = document.getElementById('score');
+    const startButton = document.getElementById('startButton');
+
+    startButton.addEventListener('click', startGame);
+
+    function startGame() {
+      score = 0;
+      scoreDisplay.textContent = 'Счет: ' + score;
+      startButton.style.display = 'none';
+
+      gameInterval = setInterval(createBalloon, 1000);
+
+      setTimeout(endGame, 15000); // Игра длится 15 секунд
+    }
+
+    function createBalloon() {
+      const balloon = document.createElement('div');
+      balloon.classList.add('balloon');
+      balloon.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+      balloon.style.top = window.innerHeight + 'px';
+      document.body.appendChild(balloon);
+
+      // Добавляем обработчик для тач- или клик-события
+      balloon.addEventListener('click', popBalloon);
+      balloon.addEventListener('touchstart', popBalloon);
+
+      // Анимация движения шарика вверх
+      let moveInterval = setInterval(() => {
+        let top = parseFloat(balloon.style.top);
+        if (top < -80) {
+          balloon.remove();
+          clearInterval(moveInterval);
+        } else {
+          balloon.style.top = top - 5 + 'px';
+        }
+      }, 20);
+    }
+
+    function popBalloon(event) {
+      event.target.remove();
+      score++;
+      scoreDisplay.textContent = 'Счет: ' + score;
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      document.querySelectorAll('.balloon').forEach(balloon => balloon.remove());
+      alert('Игра окончена! Ваш счет: ' + score);
+      startButton.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
